@@ -10,6 +10,33 @@
     const observedData = data?.data?.observed?.data || [];
     const forecastData = data?.data?.forecast?.data || [];
 
+     // Create an array of timestamps with hourly intervals
+    const hourlyTimestamps = [];
+    const startDate = new Date(forecastData[0].validTime);
+    const endDate = new Date(forecastData[forecastData.length - 1].validTime);
+
+    for (let currentTimestamp = startDate; currentTimestamp <= endDate; currentTimestamp.setHours(currentTimestamp.getHours() + 1)) {
+        hourlyTimestamps.push(currentTimestamp.toISOString());
+    }
+
+    // Map forecast data to hourly intervals and fill missing hours with previous values
+    let prevPrimary: any;
+    let prevSecondary: any;
+
+    const hourlyForecastData = hourlyTimestamps.map(timestamp => {
+        const matchingEntry = forecastData.find(entry => new Date(entry.validTime).toISOString() === new Date(timestamp).toISOString());
+
+        if (matchingEntry) {
+            // Update previous values for next iteration
+            prevPrimary = matchingEntry.primary;
+            prevSecondary = matchingEntry.secondary;
+            return matchingEntry;
+        } else {
+            // Use previous values for missing hours
+            return { validTime: timestamp, primary: prevPrimary, secondary: prevSecondary };
+        }
+    });
+
     // Calculate the date 5 days ago
     const fiveDaysAgo = new Date();
     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
@@ -23,15 +50,15 @@
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric',
-        timeZone: 'America/Los_Angeles', // Adjust to your desired timezone
+        timeZone: 'America/Los_Angeles', 
     }));
 
-    const forecastLabels = forecastData.map(entry => new Date(entry.validTime).toLocaleString('en-US', {
+    const forecastLabels = hourlyForecastData.map(entry => new Date(entry.validTime).toLocaleString('en-US', {
         month: 'short',
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric',
-        timeZone: 'America/Los_Angeles', // Adjust to your desired timezone
+        timeZone: 'America/Los_Angeles',
     }));
 
     const chartLabels = observedLabels.concat(forecastLabels);
@@ -39,13 +66,13 @@
     const observedValues = filteredObservedData.map((entry: { secondary: number; }) => entry.secondary * 1000);
 
     // Pad the forecast dataset with null values to match the length of the observed dataset
-    const forecastValues = Array(filteredObservedData.length).fill(null).concat(forecastData.map((entry: { secondary: number; }) => entry.secondary * 1000));
+    const forecastValues = Array(filteredObservedData.length).fill(null).concat(hourlyForecastData.map((entry: { secondary: number; }) => entry.secondary * 1000));
 
     // Bar for today
     const todayValues = Array(forecastValues.length).fill(null);
     todayValues[observedValues.length-1] = observedValues[observedValues.length - 1];
 
-    // Add 40 null values to the end of the observedValues array
+    // Add null values to the end of the observedValues array
     const lengthToAdd = forecastValues.length - observedValues.length;
     observedValues.length += lengthToAdd;
     observedValues.fill(null, observedValues.length - lengthToAdd);
@@ -120,7 +147,7 @@
             data: chartdata,
             type: 'bar',
             height: 500,
-            colors: ['#743ee2', '#7cd6fd', '#f91643'],
+            colors: ['#743ee2', '#7cd6fd', '#000'],
             axisOptions: {
                 xIsSeries: true,
                 xAxisMode: 'tick'
