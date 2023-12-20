@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { Chart } from 'frappe-charts';
+	import { max } from 'd3';
 
     export let data: any;
 
@@ -63,10 +64,10 @@
 
     const chartLabels = observedLabels.concat(forecastLabels);
 
-    const observedValues = filteredObservedData.map((entry: { secondary: number; }) => entry.secondary * 1000);
+    const observedValues = filteredObservedData.map((entry: { primary: number; }) => entry.primary);
 
     // Pad the forecast dataset with null values to match the length of the observed dataset
-    const forecastValues = Array(filteredObservedData.length).fill(null).concat(hourlyForecastData.map((entry: { secondary: number; }) => entry.secondary * 1000));
+    const forecastValues = Array(filteredObservedData.length).fill(null).concat(hourlyForecastData.map((entry: { primary: number; }) => entry.primary));
 
     // Bar for today
     const todayValues = Array(forecastValues.length).fill(null);
@@ -78,10 +79,11 @@
     observedValues.fill(null, observedValues.length - lengthToAdd);
     
     //Flood stages
-    const actionFlood = data?.data2?.flood?.categories?.action?.flow;
-    const minorFlood = data?.data2?.flood?.categories?.minor?.flow;
-    const moderateFlood = data?.data2?.flood?.categories?.moderate?.flow;
-    const majorFlood = data?.data2?.flood?.categories?.major?.flow;
+    const actionFlood = data?.data2?.flood?.categories?.action?.stage;
+    const minorFlood = data?.data2?.flood?.categories?.minor?.stage;
+    const moderateFlood = data?.data2?.flood?.categories?.moderate?.stage;
+    const majorFlood = data?.data2?.flood?.categories?.major?.stage;
+
 
     //River Info
     const riverTitle = data?.data2?.name;
@@ -136,7 +138,7 @@
                 {
                     label: "",
                     start: majorFlood,
-                    end: majorFlood + 1500,
+                    end: majorFlood + 2,
                     options: { labelPos: 'right'}
                 }
             ]
