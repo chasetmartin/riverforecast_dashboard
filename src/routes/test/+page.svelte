@@ -1,8 +1,6 @@
 <script lang="ts">
     export let data: any;
 
-    console.log(data);
-
     // Helper function to group the gauges by state
     function groupByState(gauges: any[]) {
         return gauges.reduce((groups, gauge) => {
@@ -36,6 +34,10 @@
 
         return closestImpact ? closestImpact.statement : "no flood statement";
     }
+
+    async function showModal() {
+
+    }
 </script>
 
 <div class="mx-auto p-8 text-center text-white">
@@ -45,10 +47,11 @@
             <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-6 gap-3">
             {#each groupedGauges[state] as gauge}
             <div class="outline rounded-3xl shadow-xl text-black pt-4 bg-slate-100">
-                <h3>{gauge.name}</h3>
-                <div>Current Observation: {gauge.status.observed.primary} feet</div>
-                <div>Flood Category: {gauge.status.observed.floodCategory}</div>
-                    <p>{findStatement(gauge)}</p>
+                <h3 class="p-2">{gauge.name}</h3>
+                <div class="p-2">Current Observation: {gauge.status.observed.primary} feet</div>
+                <div class="p-2">Flood Category: {gauge.status.observed.floodCategory}</div>
+                <a on:click|preventDefault={showModal} class="outline rounded-md p-2 hover:bg-slate-400" href="/test/{gauge.lid}">Click to Expand</a>
+                    <p class="p-2">{findStatement(gauge)}</p>
                 <br>
             </div>
             {/each}
