@@ -38,21 +38,22 @@
     }
 </script>
 
-{#each Object.keys(groupedGauges) as state}
-    <h1>{state}</h1>
-    {#each groupedGauges[state] as gauge}
-        <h2>{gauge.lid}</h2>
-        <h3>{gauge.name}</h3>
-        <h4>Flood Category: {gauge.status.observed.floodCategory}</h4>
-            <!-- {#if gauge.flood.impacts[0] && gauge.flood.impacts[0].stage}
-                {#if gauge.status.observed.primary >= gauge.flood.impacts[0].stage }
-                    <p>{gauge.flood.impacts[0].statement}</p>
-                {/if}
-            {/if} -->
-            <p>{findStatement(gauge)}</p>
-        <br>
-    {/each}
-    <hr>
-{/each}
+<div class="mx-auto p-8 text-center text-white">
+    <div class="text-3xl mb-4">River Forecasting Dashboard</div>
+            {#each Object.keys(groupedGauges) as state}
+            <div>{state}</div>
+            <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-6 gap-3">
+            {#each groupedGauges[state] as gauge}
+            <div class="outline rounded-3xl shadow-xl text-black pt-4 bg-slate-100">
+                <h3>{gauge.name}</h3>
+                <div>Current Observation: {gauge.status.observed.primary} feet</div>
+                <div>Flood Category: {gauge.status.observed.floodCategory}</div>
+                    <p>{findStatement(gauge)}</p>
+                <br>
+            </div>
+            {/each}
+            </div>
+        {/each}
+</div>
 
 
