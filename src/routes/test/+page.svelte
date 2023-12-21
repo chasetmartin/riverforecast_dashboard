@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { goto, preloadData, pushState } from "$app/navigation";
+
+    import Modal from './modal.svelte'
+
     export let data: any;
 
     // Helper function to group the gauges by state
@@ -35,10 +39,25 @@
         return closestImpact ? closestImpact.statement : "no flood statement";
     }
 
-    async function showModal() {
+    async function showModal(e: MouseEvent) {
+        //get url
+        const {href} = e.currentTarget as HTMLAnchorElement;
 
+        //get result of load function
+        const result = await preloadData(href);
+
+        //create new history entry
+        if (result.type === 'loaded' && result.status === 200) {
+            pushState(href, {selected: result.data});
+        } else {
+            goto(href);
+        }
     }
+
+
 </script>
+
+<Modal></Modal>
 
 <div class="mx-auto p-8 text-center text-white">
     <div class="text-3xl mb-4">River Forecasting Dashboard</div>
