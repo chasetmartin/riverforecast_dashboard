@@ -1,38 +1,15 @@
-# create-svelte
+# River Flood Forecasting Dashboard
+### This application is a flood level dashboard designed to provide users with real-time river flood statuses and forecasts, based on the new API from the National Water Prediction Service (NOAA). 
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+#### It will eventually allow users to create their own personalized dashboards to monitor the flood levels of specific rivers.
 
-## Creating a project
+## Features
+- Real-time Data: The application fetches real-time data from the NOAA (National Oceanic and Atmospheric Administration) API, ensuring that users always have the most up-to-date information.
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Flood Statuses and Forecasts: Users can view the current flood status of various rivers, as well as forecasts for future flood levels. The flood statuses are categorized into 'major', 'moderate', 'minor', and 'action' levels.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+- Personalized Dashboard: Users will be able to create their own dashboard to monitor specific rivers. This allows users to focus on the rivers that are most relevant to them.
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
 
-## Developing
+#### Thanks for following along during the construction
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
