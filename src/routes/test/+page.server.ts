@@ -9,7 +9,7 @@ export const load: PageServerLoad = async () => {
         if (observed) {
             const floodCategory = observed.floodCategory;
             // return floodCategory === 'action' || floodCategory === 'minor' || floodCategory === 'major';
-            return floodCategory === 'major';
+            return floodCategory === 'major' || floodCategory === 'moderate';
         }
         return false;
     });

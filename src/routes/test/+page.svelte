@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { goto, preloadData, pushState } from "$app/navigation";
 
-    import Modal from './modal.svelte'
+    import Modal from './modal.svelte';
+
+    import Guage from './[id]/+page.svelte';
+	import { page } from "$app/stores";
 
     export let data: any;
 
@@ -48,16 +51,26 @@
 
         //create new history entry
         if (result.type === 'loaded' && result.status === 200) {
-            pushState(href, {selected: result.data});
+            pushState(href, { selected: result.data });
+            modal.showModal();
         } else {
             goto(href);
         }
     }
 
+    let modal: HTMLDialogElement;
 
+    function closeModal() {
+        history.back();
+    }
 </script>
 
-<Modal></Modal>
+<Modal bind:modal on:close={closeModal}>
+    {#if $page.state.selected}
+        <Guage data={$page.state.selected} />
+    {/if}
+</Modal>
+
 
 <div class="mx-auto p-8 text-center text-white">
     <div class="text-3xl mb-4">River Forecasting Dashboard</div>
