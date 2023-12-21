@@ -1,5 +1,7 @@
 # River Flood Forecasting Dashboard
-### This application is a flood level dashboard designed to provide users with real-time river flood statuses and forecasts, based on the new API from the National Water Prediction Service (NOAA). 
+### This application is a flood level dashboard designed to provide users with real-time river flood statuses and forecasts, based on the new Preview API from the National Water Prediction Service (NOAA). 
+
+*** This is a test project and should not be used for decision making ***
 
 #### It will eventually allow users to create their own personalized dashboards to monitor the flood levels of specific rivers.
 
