@@ -6,6 +6,8 @@
 	const gauge = data.gauge;
 	const flow = data.flow;
 
+	console.log(flow);
+
 
 </script>
 

@@ -37,12 +37,12 @@
 	{/if}
 </Modal>
 
-<div>
+<div class="">
     {#each data as gauge}
-    <div class="outline rounded-3xl shadow-xl text-black pt-4 pb-6 bg-slate-100">
+    <div class="outline rounded-3xl shadow-xl text-black pt-4 pb-6 mb-2 bg-slate-100">
         <h3 class="p-2 font-bold">{gauge.name}</h3>
         <div class="p-2">Current Observation: {gauge.status.observed.primary} feet</div>
-        <div class={`p-2 w-3/5 mb-4 mx-auto ${
+        <div class={`p-2 w-3/5 mb-4 rounded-md mx-auto ${
             gauge.status.observed.floodCategory === 'major' ? 'bg-red-700 text-white' : 
             gauge.status.observed.floodCategory === 'moderate' ? 'bg-orange-400' : 'bg-slate-100'
         }`}>
