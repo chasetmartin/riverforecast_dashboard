@@ -1,8 +1,11 @@
 <script lang="ts">
+	import GaugeForecast from "$lib/components/gaugeForecast.svelte";
 	import { findFloodStatement } from "$lib/helpers/findFloodStatement";
 
 	export let data: any;
 	const gauge = data.gauge;
+	const flow = data.flow;
+
 
 </script>
 

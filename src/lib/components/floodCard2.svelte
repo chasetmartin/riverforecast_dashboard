@@ -40,9 +40,13 @@
 <div>
     {#each data as gauge}
     <div class="outline rounded-3xl shadow-xl text-black pt-4 pb-6 bg-slate-100">
-        <h3 class="p-2">{gauge.name}</h3>
+        <h3 class="p-2 font-bold">{gauge.name}</h3>
         <div class="p-2">Current Observation: {gauge.status.observed.primary} feet</div>
-        <div class="p-2">Flood Category: {gauge.status.observed.floodCategory}</div>
+        <div class={`p-2 w-3/5 mb-4 mx-auto ${
+            gauge.status.observed.floodCategory === 'major' ? 'bg-red-700 text-white' : 
+            gauge.status.observed.floodCategory === 'moderate' ? 'bg-orange-400' : 'bg-slate-100'
+        }`}>
+        Flood Category: {gauge.status.observed.floodCategory}</div>
         <a
             on:click|preventDefault={showModal}
             class="outline rounded-md p-2 hover:bg-slate-400"

@@ -7,7 +7,8 @@
 </script>
 
 {#each Object.keys(data) as state}
-		<div class="grid grid-cols-1 gap-2 my-auto">{state}
+		<div class="grid grid-cols-1 gap-2 my-auto">
+            <div class="font-extralight">{state}</div>
             <FloodCard2 data={data[state]} />
         </div>
 {/each}
