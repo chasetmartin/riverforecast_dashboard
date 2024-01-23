@@ -75,7 +75,7 @@
             <hr class="w-3/5 mx-auto">
             <br>
             <div class="w-4/5 text-sm mx-auto">
-                <strong>Disclaimer:</strong> This dashboard is independently developed and is not affiliated with the National Oceanic and Atmospheric Administration (NOAA) or the National Water Prediction Service. It utilizes a preview version of NOAA's API, which may present data that is not current or accurate. As such, the information provided here should NOT be used for making critical decisions. We advise consulting official sources for accurate and up-to-date information:
+                <strong>Disclaimer:</strong> This dashboard is independently developed and is not affiliated with the National Oceanic and Atmospheric Administration (NOAA) or the National Water Prediction Service. It utilizes a preview version of NOAA's API, which may present data that is not current or accurate. As such, the information provided here should NOT be used for making decisions. Use at your own discretion. We advise consulting official sources for accurate and up-to-date information:
                 <a class="font-semibold" href="https://water.noaa.gov/">Office of Water Prediction</a>
             </div>
             
