@@ -1,6 +1,7 @@
-import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+
+export const load = async () => {
+	
 	const response = await fetch('https://preview-api.water.noaa.gov/v1/gauges');
 	const data = await response.json();
 
@@ -21,6 +22,7 @@ export const load: PageServerLoad = async () => {
 		})
 	);
 
+	
 	return {
 		gauges: gaugeDetails
 	};

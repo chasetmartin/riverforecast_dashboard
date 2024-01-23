@@ -50,9 +50,10 @@
         <a
             on:click|preventDefault={showModal}
             class="outline rounded-md p-2 hover:bg-slate-400"
-            href="/{gauge.lid}">Click for Details</a
+            href="/{gauge.lid}">Click for more details</a
         >
+
         <br />
-    </div>
+        </div>
     {/each}
 </div>
