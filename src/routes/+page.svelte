@@ -11,10 +11,11 @@
     loading.set(true);
     let gauges: any;
     let hasModerateFloods = false;
+    let hasMajorFloods = false;
 
    onMount(async () => {
     try {
-        const response = await fetch('https://preview-api.water.noaa.gov/v1/gauges');
+        const response = await fetch('https://preview-api.water.noaa.gov/nwps/v1/gauges');
 	    const data = await response.json();
 
 	    const filteredGauges = data.gauges.filter((gauge: any) => {
@@ -29,10 +30,10 @@
 
 	    gauges = await Promise.all(
 		filteredGauges.map(async (gauge: any) => {
-		const gaugeResponse = await fetch(`https://preview-api.water.noaa.gov/v1/gauges/${gauge.lid}`);
+		const gaugeResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}`);
         const gaugeData = await gaugeResponse.json();
 
-        const stageflowResponse = await fetch(`https://preview-api.water.noaa.gov/v1/gauges/${gauge.lid}/stageflow`);
+        const stageflowResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}/stageflow`);
         const stageflowData = await stageflowResponse.json();
 
         console.log(stageflowData);
@@ -55,6 +56,7 @@
     gauges = gauges.filter((gauge: any) => gauge !== null);
 
     hasModerateFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'moderate');
+    hasMajorFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'major');
 
     }
     catch {
@@ -65,6 +67,7 @@
    });
 
 </script>
+
     <div class="mx-auto p-8 text-center text-white">
         <div class="text-3xl mb-4">US Flood Forecasting Dashboard</div>
         <div class="text-2xl p-2">Showing: Current 
@@ -85,6 +88,9 @@
     {:else}
     {#if !hasModerateFloods}
     <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-orange-400 p-1 rounded-md text-black">Moderate</span> Floods Found</div> 
+    {/if}
+    {#if !hasMajorFloods}
+    <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-red-700 p-1 rounded-md">Major</span> Floods Found</div> 
     {/if}
     <div class="text-white mx-auto text-center grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-3 gap-3">
         <StateTitle data={groupByState(gauges)} />   
