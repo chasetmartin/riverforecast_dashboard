@@ -1,13 +1,26 @@
 <script lang="ts">
     import { loading } from '$lib/helpers/loading';
+    export let percentage = 0;
 </script>
 
 {#if $loading}
-<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+<div class="lds-roller">
+  <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+  </div>
+<div class="percentage">{percentage}%</div>
 <div class="loading-text">Loading... Thanks for your patience.</div>
 {/if}
 
 <style>
+  .percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 25px; /* Adjust as needed */
+    color: #fff; /* Adjust as needed */
+}
+
   .lds-roller {
   display: inline-block;
   position: fixed; /* Changed to fixed to position relative to the viewport */

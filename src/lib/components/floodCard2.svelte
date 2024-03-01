@@ -44,7 +44,9 @@
         <div class="p-2">Current Observation: {gauge.status.observed.primary} feet</div>
         <div class={`p-2 w-3/5 mb-4 rounded-md mx-auto ${
             gauge.status.observed.floodCategory === 'major' ? 'bg-red-700 text-white' : 
-            gauge.status.observed.floodCategory === 'moderate' ? 'bg-orange-400' : 'bg-slate-100'
+            gauge.status.observed.floodCategory === 'moderate' ? 'bg-orange-400' : 
+            gauge.status.observed.floodCategory === 'minor' ? 'bg-yellow-400' :
+            gauge.status.observed.floodCategory === 'action' ? 'bg-blue-400' : 'bg-slate-400'
         }`}>
         Flood Category: {gauge.status.observed.floodCategory}</div>
         <a

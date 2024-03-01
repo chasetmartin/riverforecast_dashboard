@@ -10,49 +10,33 @@
 
     loading.set(true);
     let gauges: any;
-    let hasModerateFloods = false;
-    let hasMajorFloods = false;
-    
-    import { writable } from 'svelte/store';
-
-    let loadingPercentage = writable(0);
-    let intervalId;
+    let hasActionFloods = false;
+    let hasMinorFloods = false;
 
    onMount(async () => {
     try {
-        loadingPercentage.set(10);
-        intervalId = setInterval(() => {
-    if ($loadingPercentage < 85) {
-        loadingPercentage.update(n => n + 3);
-    }
-    }, 1000);
-
         const response = await fetch('https://preview-api.water.noaa.gov/nwps/v1/gauges');
 	    const data = await response.json();
-
-        clearInterval(intervalId);
-        loadingPercentage.set(90);
 
 	    const filteredGauges = data.gauges.filter((gauge: any) => {
 		const observed = gauge.status?.observed;
 		if (observed) {
 			const floodCategory = observed.floodCategory;
-			// return floodCategory === 'action' || floodCategory === 'minor' || floodCategory === 'major';
-			return floodCategory === 'major' || floodCategory === 'moderate';
+			return floodCategory === 'action' || floodCategory === 'minor';
+			// return floodCategory === 'major' || floodCategory === 'moderate';
 		}
-        loadingPercentage.set(92);
 		return false;
 	});
-        loadingPercentage.set(94);
+
 	    gauges = await Promise.all(
 		filteredGauges.map(async (gauge: any) => {
 		const gaugeResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}`);
         const gaugeData = await gaugeResponse.json();
-        loadingPercentage.set(96);
+
         const stageflowResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}/stageflow`);
         const stageflowData = await stageflowResponse.json();
-        loadingPercentage.set(98);    
-        //console.log(stageflowData);
+
+        console.log(stageflowData);
 
         if (stageflowData && stageflowData.observed) {
           const issuedTime = new Date(stageflowData.observed.issuedTime);
@@ -67,18 +51,17 @@
       })
     );
     
-    loadingPercentage.set(99);
+
     // Filter out null values (gauges older than 3 days)
     gauges = gauges.filter((gauge: any) => gauge !== null);
 
-    hasModerateFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'moderate');
-    hasMajorFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'major');
+    hasActionFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'action');
+    hasMinorFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'minor');
 
     }
     catch {
         console.log('error');
     } finally {
-        loadingPercentage.set(100);
         loading.set(false);
     }
    });
@@ -88,9 +71,9 @@
     <div class="mx-auto p-8 text-center text-white">
         <div class="text-3xl mb-4">US Flood Forecasting Dashboard</div>
         <div class="text-2xl p-2">Showing: Current 
-            <span class="bg-red-700 p-1 rounded-md">Major</span> 
+            <span class="bg-yellow-300 p-1 rounded-md text-black">Minor</span> 
                 and/or 
-            <span class="bg-orange-400 p-1 rounded-md text-black">Moderate</span>
+            <span class="bg-blue-400 p-1 rounded-md text-black">Action Level</span>
                 Flooding</div>
             <hr class="w-3/5 mx-auto">
             <br>
@@ -98,23 +81,18 @@
                 <strong>Disclaimer:</strong> This dashboard is independently developed and is not affiliated with the National Oceanic and Atmospheric Administration (NOAA) or the National Water Prediction Service. It utilizes a preview version of NOAA's API, which may present data that is not current or accurate. As such, the information provided here should NOT be used for making decisions. Use at your own discretion. We advise consulting official sources for accurate and up-to-date information:
                 <a class="font-semibold" href="https://water.noaa.gov/">Office of Water Prediction</a>
             </div>
-            <div class="mx-auto p-4 text-center text-white text-xl">
-                <a href="/minor" class="inline-block bg-yellow-300 hover:bg-yellow-400 text-black py-2 px-4 rounded">
-                    View Minor Floods
-                </a>
-            </div>
+            
         </div>
     {#if $loading}
-    <Loading percentage={$loadingPercentage}/>
+    <Loading />
     {:else}
-    {#if !hasModerateFloods}
-    <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-orange-400 p-1 rounded-md text-black">Moderate</span> Floods Found</div> 
+    {#if !hasActionFloods}
+    <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-blue-400 p-1 rounded-md text-black">Action Level</span> Floods Found</div> 
     {/if}
-    {#if !hasMajorFloods}
-    <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-red-700 p-1 rounded-md">Major</span> Floods Found</div> 
+    {#if !hasMinorFloods}
+    <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-yellow-300 p-1 rounded-md">Minor</span> Floods Found</div> 
     {/if}
     <div class="text-white mx-auto text-center grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-3 gap-3">
         <StateTitle data={groupByState(gauges)} />   
     </div>
     {/if}
-    
