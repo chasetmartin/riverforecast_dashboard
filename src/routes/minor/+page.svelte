@@ -13,30 +13,46 @@
     let hasActionFloods = false;
     let hasMinorFloods = false;
 
+    import { writable } from 'svelte/store';
+
+    let loadingPercentage = writable(0);
+    let intervalId;
+
    onMount(async () => {
     try {
+        loadingPercentage.set(10);
+        intervalId = setInterval(() => {
+    if ($loadingPercentage < 85) {
+        loadingPercentage.update(n => n + 3);
+    }
+    }, 1000);
+
         const response = await fetch('https://preview-api.water.noaa.gov/nwps/v1/gauges');
 	    const data = await response.json();
+
+        clearInterval(intervalId);
+        loadingPercentage.set(90);
 
 	    const filteredGauges = data.gauges.filter((gauge: any) => {
 		const observed = gauge.status?.observed;
 		if (observed) {
 			const floodCategory = observed.floodCategory;
 			return floodCategory === 'action' || floodCategory === 'minor';
-			// return floodCategory === 'major' || floodCategory === 'moderate';
+			//return floodCategory === 'major' || floodCategory === 'moderate';
 		}
+        loadingPercentage.set(92);
 		return false;
 	});
-
+        loadingPercentage.set(94);
 	    gauges = await Promise.all(
 		filteredGauges.map(async (gauge: any) => {
 		const gaugeResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}`);
         const gaugeData = await gaugeResponse.json();
-
+        loadingPercentage.set(96);
         const stageflowResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}/stageflow`);
         const stageflowData = await stageflowResponse.json();
-
-        console.log(stageflowData);
+        loadingPercentage.set(98);    
+        //console.log(stageflowData);
 
         if (stageflowData && stageflowData.observed) {
           const issuedTime = new Date(stageflowData.observed.issuedTime);
@@ -51,7 +67,7 @@
       })
     );
     
-
+    loadingPercentage.set(99);
     // Filter out null values (gauges older than 3 days)
     gauges = gauges.filter((gauge: any) => gauge !== null);
 
@@ -62,6 +78,7 @@
     catch {
         console.log('error');
     } finally {
+        loadingPercentage.set(100);
         loading.set(false);
     }
    });
@@ -84,7 +101,7 @@
             
         </div>
     {#if $loading}
-    <Loading />
+    <Loading percentage={$loadingPercentage}/>
     {:else}
     {#if !hasActionFloods}
     <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-blue-400 p-1 rounded-md text-black">Action Level</span> Floods Found</div> 
