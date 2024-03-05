@@ -6,6 +6,8 @@
 	import Guage from '../../routes/[id]/+page.svelte';
 
     export let data: any;
+    let gauge = data;
+    console.log(data);
    
     async function showModal(e: MouseEvent) {
 		//get url
@@ -38,9 +40,9 @@
 </Modal>
 
 <div class="">
-    {#each data as gauge}
+    <!-- {#each data as gauge} -->
     <div class="outline rounded-3xl shadow-xl text-black pt-4 pb-6 mb-2 bg-slate-100">
-        <h3 class="p-2 font-bold">{gauge.name}</h3>
+        <h3 class="p-2 font-bold">{gauge.lid}</h3>
         <div class="p-2">Current Observation: {gauge.status.observed.primary} feet</div>
         <div class={`p-2 w-3/5 mb-4 rounded-md mx-auto ${
             gauge.status.observed.floodCategory === 'major' ? 'bg-red-700 text-white' : 
@@ -57,5 +59,5 @@
 
         <br />
         </div>
-    {/each}
+    <!-- {/each} -->
 </div>
