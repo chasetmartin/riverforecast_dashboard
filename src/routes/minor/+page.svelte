@@ -14,6 +14,7 @@
     let hasMinorFloods = false;
 
     import { writable } from 'svelte/store';
+	import FloodCard2 from '$lib/components/floodCard2.svelte';
 
     let loadingPercentage = writable(0);
     let intervalId;
@@ -21,16 +22,16 @@
    onMount(async () => {
     try {
         loadingPercentage.set(10);
-        intervalId = setInterval(() => {
-    if ($loadingPercentage < 85) {
-        loadingPercentage.update(n => n + 3);
-    }
-    }, 1000);
+    //     intervalId = setInterval(() => {
+    // if ($loadingPercentage < 85) {
+    //     loadingPercentage.update(n => n + 3);
+    // }
+    // }, 1000);
 
         const response = await fetch('https://preview-api.water.noaa.gov/nwps/v1/gauges');
 	    const data = await response.json();
 
-        clearInterval(intervalId);
+        // clearInterval(intervalId);
         loadingPercentage.set(90);
 
 	    const filteredGauges = data.gauges.filter((gauge: any) => {
@@ -44,32 +45,33 @@
 		return false;
 	});
         loadingPercentage.set(94);
-	    gauges = await Promise.all(
-		filteredGauges.map(async (gauge: any) => {
-		const gaugeResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}`);
-        const gaugeData = await gaugeResponse.json();
-        loadingPercentage.set(96);
-        const stageflowResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}/stageflow`);
-        const stageflowData = await stageflowResponse.json();
-        loadingPercentage.set(98);    
-        //console.log(stageflowData);
+        gauges = filteredGauges;
+	//     gauges = await Promise.all(
+	// 	filteredGauges.map(async (gauge: any) => {
+	// 	const gaugeResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}`);
+    //     const gaugeData = await gaugeResponse.json();
+    //     loadingPercentage.set(96);
+    //     const stageflowResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}/stageflow`);
+    //     const stageflowData = await stageflowResponse.json();
+    //     loadingPercentage.set(98);    
+    //     //console.log(stageflowData);
 
-        if (stageflowData && stageflowData.observed) {
-          const issuedTime = new Date(stageflowData.observed.issuedTime);
-          const threeDaysAgo = new Date();
-          threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    //     if (stageflowData && stageflowData.observed) {
+    //       const issuedTime = new Date(stageflowData.observed.issuedTime);
+    //       const threeDaysAgo = new Date();
+    //       threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-          if (issuedTime > threeDaysAgo) {
-            return { ...gaugeData, stageflow: stageflowData };
-          }
-        }
-        return null;
-      })
-    );
+    //       if (issuedTime > threeDaysAgo) {
+    //         return { ...gaugeData, stageflow: stageflowData };
+    //       }
+    //     }
+    //     return null;
+    //   })
+    // );
     
     loadingPercentage.set(99);
     // Filter out null values (gauges older than 3 days)
-    gauges = gauges.filter((gauge: any) => gauge !== null);
+    // gauges = gauges.filter((gauge: any) => gauge !== null);
 
     hasActionFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'action');
     hasMinorFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'minor');
@@ -110,6 +112,8 @@
     <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-yellow-300 p-1 rounded-md">Minor</span> Floods Found</div> 
     {/if}
     <div class="text-white mx-auto text-center grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-3 gap-3">
-        <StateTitle data={groupByState(gauges)} />   
+        {#each gauges as gauge (gauge.lid)}
+            <FloodCard2 data={gauge} />
+        {/each}  
     </div>
     {/if}
