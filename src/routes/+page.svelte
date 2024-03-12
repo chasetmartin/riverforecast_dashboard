@@ -47,6 +47,7 @@
         loadingPercentage.set(94);
         gauges = filteredGauges;
         console.log(gauges);
+
 	//     gauges = await Promise.all(
 	// 	filteredGauges.map(async (gauge: any) => {
 	// 	const gaugeResponse = await fetch(`https://preview-api.water.noaa.gov/nwps/v1/gauges/${gauge.lid}`);
