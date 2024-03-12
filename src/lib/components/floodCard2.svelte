@@ -1,13 +1,20 @@
 <script lang="ts">
     import { goto, preloadData, pushState } from '$app/navigation';
 	import { page } from '$app/stores';
+    import { allGauges } from '$lib/helpers/allGauges';
 
     import Modal from '$lib/components/modal.svelte';
 	import Guage from '../../routes/[id]/+page.svelte';
 
     export let data: any;
     let gauge = data;
-    console.log(data);
+    //console.log(data);
+
+    //Get gauge name
+    function getGaugeName(lid: string) {
+        const gauge = allGauges.find(g => g.lid === lid);
+        return gauge ? gauge.name : lid;
+    }
    
     async function showModal(e: MouseEvent) {
 		//get url
@@ -42,7 +49,7 @@
 <div class="">
     <!-- {#each data as gauge} -->
     <div class="outline rounded-3xl shadow-xl text-black pt-4 pb-6 mb-2 bg-slate-100">
-        <h3 class="p-2 font-bold">{gauge.lid}</h3>
+        <h3 class="p-2 font-bold">{getGaugeName(gauge.lid)}</h3>
         <div class="p-2">Current Observation: {gauge.status.observed.primary} feet</div>
         <div class={`p-2 w-3/5 mb-4 rounded-md mx-auto ${
             gauge.status.observed.floodCategory === 'major' ? 'bg-red-700 text-white' : 
