@@ -18,6 +18,7 @@
 
     let loadingPercentage = writable(0);
     let intervalId;
+    let errorMessage: string;
 
    onMount(async () => {
     try {
@@ -77,8 +78,9 @@
     hasMinorFloods = gauges.some((gauge: { status: { observed: { floodCategory: string; }; }; }) => gauge.status?.observed?.floodCategory === 'minor');
 
     }
-    catch {
-        console.log('error');
+    catch (error) {
+        console.log((error as Error).message);
+        if (error instanceof Error) errorMessage = "Apologies for the inconvenience. The NWPS API is undergoing planned maintenance. We will be back online March 16th. Thank you for your patience and understanding!";
     } finally {
         loadingPercentage.set(100);
         loading.set(false);
@@ -105,15 +107,20 @@
     {#if $loading}
     <Loading percentage={$loadingPercentage}/>
     {:else}
-    {#if !hasActionFloods}
+    {#if !hasActionFloods && !errorMessage}
     <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-blue-400 p-1 rounded-md text-black">Action Level</span> Floods Found</div> 
     {/if}
-    {#if !hasMinorFloods}
+    {#if !hasMinorFloods && !errorMessage}
     <div class="mx-auto p-4 text-center text-white text-xl">No <span class="bg-yellow-300 p-1 rounded-md">Minor</span> Floods Found</div> 
     {/if}
+    {#if errorMessage}
+    <div class="mx-auto p-4 text-center text-white text-xl">{errorMessage}</div>
+    {/if}
     <div class="text-white mx-auto text-center grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-3 gap-3">
-        {#each gauges as gauge (gauge.lid)}
+        {#if gauges}
+            {#each gauges as gauge (gauge.lid)}
             <FloodCard2 data={gauge} />
-        {/each}  
+            {/each}
+        {/if}
     </div>
     {/if}
