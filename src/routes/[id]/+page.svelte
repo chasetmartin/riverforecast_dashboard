@@ -35,7 +35,7 @@
 		<br>
 		<a
             class="outline rounded-md p-2 hover:bg-slate-400 text-sm"
-            href="https://preview.water.noaa.gov/gauges/{gauge.lid}" target="_blank">Click to check data on NOAA Preview site</a
+            href="https://water.noaa.gov/gauges/{gauge.lid}" target="_blank">Click to check data on NOAA Preview site</a
         >
 	</div>
 </div>
