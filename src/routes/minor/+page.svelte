@@ -22,14 +22,14 @@
 
    onMount(async () => {
     try {
-        loadingPercentage.set(10);
+        loadingPercentage.set(25);
     //     intervalId = setInterval(() => {
     // if ($loadingPercentage < 85) {
     //     loadingPercentage.update(n => n + 3);
     // }
     // }, 1000);
 
-        const response = await fetch('https://preview-api.water.noaa.gov/nwps/v1/gauges');
+        const response = await fetch('https://api.water.noaa.gov/nwps/v1/gauges');
 	    const data = await response.json();
 
         // clearInterval(intervalId);
